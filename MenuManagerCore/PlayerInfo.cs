@@ -167,7 +167,7 @@ namespace MenuManager
 
         public bool IsEqualButtons(PlayerButtons buttons)
         {
-            var flag = prev_buttons.Equals(buttons);
+            var flag = prev_buttons == buttons;
             prev_buttons = buttons;
             return flag;
         }

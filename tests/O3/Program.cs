@@ -24,11 +24,17 @@ before = info.GetText(); menu.MenuOptions[0] = new("replacement"); Check(info.Ge
 before = info.GetText(); info.MoveDown(); Check(info.GetText() != before, "selection");
 before = info.GetText(); Control.Instance.Config.MenuLinesCount = 3; Check(info.GetText() != before, "line count");
 before = info.GetText(); Control.Instance.Localizer["menumanager.footer"].Value = "new footer"; Check(info.GetText() != before, "locale");
+before = info.GetText(); menu.MenuOptions.RemoveAt(0); Check(info.GetText() != before, "option count");
+before = info.GetText(); menu.MenuOptions.Reverse(); Check(info.GetText() != before, "option order");
+var emptyMenu = new ButtonMenu();
+var emptyInfo = new PlayerInfo(player, emptyMenu);
+Check(emptyInfo.GetText().Contains("empty"), "empty menu");
+Check(ReferenceEquals(emptyInfo.GetText(), emptyInfo.GetText()), "empty menu cache");
 info.ApplyMovementLock(); Check(pawn.VelocityModifier == 0, "movement locked");
 info.RestoreMovement(); Check(pawn.VelocityModifier == .75f, "movement restored");
 player.PlayerPawn.Value = new Pawn { Handle = 12, VelocityModifier = .9f };
 info.ApplyMovementLock(); info.RestoreMovement(); Check(player.PlayerPawn.Value.VelocityModifier == .9f, "new pawn untouched");
-Console.WriteLine("O3 behavior: 13 checks passed");
+Console.WriteLine("O3 behavior: 17 checks passed");
 
 string OldRender(ButtonMenu m, int offset, int selected)
 {
