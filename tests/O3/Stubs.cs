@@ -1,9 +1,10 @@
 namespace CounterStrikeSharp.API { [Flags] public enum PlayerButtons : ulong { Forward=8, Back=16, Use=32, Reload=8192 } }
 namespace CounterStrikeSharp.API.Modules.Menu { public enum PostSelectAction { Nothing, Close, Reset } public class ChatMenuOption { public string Text; public bool Disabled; public Action<CounterStrikeSharp.API.Core.CCSPlayerController,ChatMenuOption> OnSelect; public ChatMenuOption(string text, bool disabled=false, Action<CounterStrikeSharp.API.Core.CCSPlayerController,ChatMenuOption>? action=null) { Text=text; Disabled=disabled; OnSelect=action ?? ((_,_)=>{}); } } }
 namespace CounterStrikeSharp.API.Core {
+    public class Identity { public uint Raw=1; }
     public class Pawn { public bool IsValid=true; public nint Handle; public float VelocityModifier=1; }
-    public class PawnHandle { public Pawn? Value; }
-    public class CCSPlayerController { public bool IsValid=true; public CounterStrikeSharp.API.PlayerButtons Buttons; public PawnHandle PlayerPawn=new(); }
+    public class PawnHandle { public Pawn? Value; public uint Raw => (uint)(Value?.Handle ?? 0); }
+    public class CCSPlayerController { public bool IsValid=true; public Identity EntityHandle=new(); public CounterStrikeSharp.API.PlayerButtons Buttons; public PawnHandle PlayerPawn=new(); }
 }
 namespace CounterStrikeSharp.API.Core.Translations { }
 namespace Serilog.Core { }

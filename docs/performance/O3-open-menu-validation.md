@@ -76,3 +76,11 @@ were removed and a scoped cold start restored consistent dependent API bindings.
 No fleet rollout or merge was performed.
 
 Fixed DLL SHA256: `d0c3cd4e6914d8427801c08950c40aaf1a5023dd3617101507291e29f112afcd`. Code commit: `98113f6`.
+
+## Follow-up review
+
+The final PR now includes offline-reviewed `1.4.1-perf.3` movement ownership,
+controller/pawn serial guards and map cleanup. The figures above remain measurements
+of perf.2. All 12 original raw profiles, an independent verifier, the new production
+callback suite and release/canary limits are in
+[review-20261110](review-20261110/README.md). Perf.3 has not been deployed in this review.

@@ -1,0 +1,22 @@
+name: Verify MenuManager
+on:
+  pull_request:
+  push:
+    branches: [main, 'codex/**']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: dotnet build MenuManager.sln -c Release
+      - run: dotnet run --project tests/O3/O3.csproj -c Release
+      - run: dotnet run --project tests/Runtime/Runtime.csproj -c Release
+      - run: python tests/verify_measurements.py
