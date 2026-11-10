@@ -36,6 +36,29 @@ player.PlayerPawn.Value = new Pawn { Handle = 12, VelocityModifier = .9f };
 info.ApplyMovementLock(); info.RestoreMovement(); Check(player.PlayerPawn.Value.VelocityModifier == .9f, "new pawn untouched");
 Console.WriteLine("O3 behavior: 17 checks passed");
 
+var changingMenu = new ButtonMenu();
+for (var k = 0; k < 10; k++) changingMenu.MenuOptions.Add(new($"dynamic{k}"));
+var changingInfo = new PlayerInfo(player, changingMenu);
+changingInfo.MoveDown(9);
+changingInfo.GetText();
+changingMenu.MenuOptions.RemoveRange(1, 9);
+Check(changingInfo.GetText().Contains("dynamic0") && changingInfo.Selected() == 0 && changingInfo.Offset() == 0,
+    "shrinking a later page must keep the remaining option visible and selected");
+changingMenu.MenuOptions.Clear();
+Check(changingInfo.GetText().Contains("empty") && changingInfo.Selected() == 0 && changingInfo.Offset() == 0,
+    "empty dynamic menu must reset navigation");
+for (var k = 0; k < 10; k++) changingMenu.MenuOptions.Add(new($"dynamic{k}"));
+changingInfo.MoveDown(5);
+changingInfo.GetText();
+Control.Instance.Config.MenuLinesCount = 3;
+Check(changingInfo.GetText().Contains("<b>dynamic5</b>") && changingInfo.Offset() == 3,
+    "reducing visible lines must keep selection on screen");
+var inheritedInfo = new PlayerInfo(player, changingMenu, new_selected: 0, new_offset: 9, old_title: changingMenu.Title);
+Check(inheritedInfo.GetText().Contains("dynamic0") && inheritedInfo.Offset() == 0,
+    "inherited page offset must not hide the selected option");
+Control.Instance.Config.MenuLinesCount = 6;
+Console.WriteLine("O3 dynamic navigation: 4 checks passed");
+
 string OldRender(ButtonMenu m, int offset, int selected)
 {
     var text = $"<font class='mono-spaced-font'>{m.Title}</font><font class='fontSize-sm stratum-font'>";

@@ -1,0 +1,31 @@
+{
+  "class": "synthetic managed, no native send/ABI/full tick",
+  "baseline_commit": "5d2892aafdf80c3b6901e7112eb13f2d62cf05c3",
+  "candidate_version": "1.4.1-perf.3",
+  "sdk": "10.0.400",
+  "tfm": "net8.0",
+  "tiered_compilation": false,
+  "warmup": 32,
+  "windows": 3,
+  "ticks_per_window": 128,
+  "source_sha256_lf": {
+    "MenuManagerCore/ButtonMenu.cs": "750e2aecb3c8734c7ae268fc74f2d2ac8bab9691f9179e05bd51f4c9d1a34e8e",
+    "MenuManagerCore/ButtonsConfig.cs": "a3c986b9d15526138ad99442c564b337ed07485aa1c47fc64191ab1087f9d5c4",
+    "MenuManagerCore/CMenuApi.cs": "412e1ba3901296801010963b19a52c529c5a39d5eaf348bbd34308eac6ad2e3e",
+    "MenuManagerCore/Control.cs": "af2fce12fa1527dd042f7e9a19a8a008215a5a5a71a427f2408143e2e7b0f5fe",
+    "MenuManagerCore/EmitSound.cs": "c95fdbec32d7739ea91b22aa1e17fe0c50992e6a06a107a4e6d7f57e4e5f339b",
+    "MenuManagerCore/Main.cs": "27e19565f92b980bc1ec8f08abec7c6e100affc4edeb591412153d2ec0782f1f",
+    "MenuManagerCore/MenuInstance.cs": "ab45c24e256fc5cf12817ee5135df08013a80ecc8e1c4444f6da43589d859268",
+    "MenuManagerCore/MenusMM.cs": "8b2187f908f8da2ada39356dd51a51fafba3ecd83aebaf1144a16420cdc15600",
+    "MenuManagerCore/Misc.cs": "bd5dd6739f261188862377de285eaecbce1abc444b70588b972d9a45f52eb5fc",
+    "MenuManagerCore/PlayerInfo.cs": "6f71bbd554f7cc04be34908bc2b5d9d96839949dcf45a2ed553a56c01fae512d",
+    "tests/Runtime/Program.cs": "923de0be80186e74395eafff144a020a55b0da0422ae032f3d51da26dbadcac6",
+    "tests/Runtime/README.md": "f4dec046d354d7cab2bfacdd36725246dafc72e56ae7a3ff0d3629d6518cea8e",
+    "tests/Runtime/Runtime.csproj": "c7784c1a6c6c41d7f9afa19d5e917dec66c3847c2432216d80c39925628de69a",
+    "tests/Runtime/Stubs.cs": "fb63c90ed0ebf0c2a57e8b2b39098664a0b89758fcf2ceb752c39ca3bb6d5393"
+  },
+  "data_sha256_lf": {
+    "synthetic-baseline.json": "acba9c8b2be34af0f6192936eb6b97034e4b86d6964fc2c014760547ad5f968c",
+    "synthetic-candidate.json": "c37de755abed0b2f78670d20c01b136fc11fe2970373a486b49c10035147a061"
+  }
+}

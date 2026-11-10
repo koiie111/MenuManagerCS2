@@ -25,6 +25,9 @@ namespace MenuManager
         private PlayerButtons prev_buttons;
         private bool closed;
         private nint pawnHandle;
+        private uint pawnIdentity;
+        private readonly uint playerIdentity;
+        private bool movementLocked;
         private string? cachedText;
         private string? cachedTitle, cachedSelected, cachedEmpty, cachedFooter;
         private int cachedOffset, cachedSelection, cachedLines, cachedCount;
@@ -36,9 +39,11 @@ namespace MenuManager
         {
             player = _player;
             menu = _menu;
+            playerIdentity = player.EntityHandle.Raw;
             
             var pawn = player.PlayerPawn.Value;
             pawnHandle = pawn is { IsValid: true } ? pawn.Handle : 0;
+            pawnIdentity = player.PlayerPawn.Raw;
             prev_mod = new_mod ?? (pawnHandle != 0 ? pawn!.VelocityModifier : 1.0f);
 
             closed = false;
@@ -73,6 +78,8 @@ namespace MenuManager
 
         public nint PawnHandle => pawnHandle;
 
+        public bool IsCurrentPlayer() => player.IsValid && player.EntityHandle.Raw == playerIdentity;
+
         public string GetText()
         {
             var config = Control.GetPlugin().Config;
@@ -80,6 +87,13 @@ namespace MenuManager
             var emptyText = Control.GetPlugin().Localizer["menumanager.empty"].Value;
             var footerText = Control.GetPlugin().Localizer["menumanager.footer"].Value;
             var count = menu.MenuOptions.Count;
+            if (cachedCount != count || cachedLines != config.MenuLinesCount)
+            {
+                // Direct option mutations or a smaller page must not leave the
+                // selection outside the list or the visible page.
+                selected = Math.Clamp(selected, 0, Math.Max(0, count - 1));
+                offset = Math.Clamp(offset, Math.Max(0, selected - config.MenuLinesCount + 1), selected);
+            }
             var end = Math.Min(offset + config.MenuLinesCount, count);
             var visible = Math.Max(0, end - offset);
             var dirty = cachedText == null || cachedTitle != menu.Title || cachedSelected != selectedText ||
@@ -232,16 +246,28 @@ namespace MenuManager
 
         public void ApplyMovementLock()
         {
+            if (!IsCurrentPlayer()) return;
             var pawn = player.PlayerPawn.Value;
-            if (pawn is { IsValid: true } && pawn.Handle == pawnHandle)
-                pawn.VelocityModifier = 0.0f;
+            if (pawn is not { IsValid: true }) return;
+            // A respawn may reuse the native address with a different serial.
+            // Capture the new pawn's own modifier before taking its lock.
+            if (!movementLocked || pawn.Handle != pawnHandle || player.PlayerPawn.Raw != pawnIdentity)
+            {
+                prev_mod = pawn.VelocityModifier;
+                pawnHandle = pawn.Handle;
+                pawnIdentity = player.PlayerPawn.Raw;
+                movementLocked = true;
+            }
+            pawn.VelocityModifier = 0.0f;
         }
 
         public void RestoreMovement()
         {
-            var pawn = player.IsValid ? player.PlayerPawn.Value : null;
-            if (pawn is { IsValid: true } && pawn.Handle == pawnHandle)
+            if (!movementLocked) return;
+            var pawn = IsCurrentPlayer() ? player.PlayerPawn.Value : null;
+            if (pawn is { IsValid: true } && pawn.Handle == pawnHandle && player.PlayerPawn.Raw == pawnIdentity)
                 pawn.VelocityModifier = prev_mod;
+            movementLocked = false;
         }
 
     }

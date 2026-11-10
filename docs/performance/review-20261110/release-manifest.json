@@ -1,0 +1,20 @@
+{
+  "module_version": "1.4.1-perf.3",
+  "code_commit": "28fe09aa6d864b2a35362775d807ad4e69ad8fcf",
+  "sdk": "10.0.400",
+  "tfm": "net8.0",
+  "css_api_package": "1.0.305",
+  "build_command": "dotnet build MenuManagerCore/MenuManagerCore.csproj -c Release -t:Rebuild",
+  "files": {
+    "MenuManagerCore.dll": "412393a37d4d54e5f8634ba9383977da1906b757c9f1278f4ed98c4050fdd4d0",
+    "MenuManagerCore.deps.json": "65a910459129154789088405eb415e6052a252d8cd8b68625a0487e217f40b47",
+    "MenuManagerCore.pdb": "51ad43ee6e9b5df6d34e4b32fd7f0daf69563c625775669356cb967dde8cca9f"
+  },
+  "reference_only_do_not_deploy": {
+    "PlayerSettingsApi.dll": "eaa24a7bb914f69614c889758452ec245e1494242bc039a87b484d57d27a41c2"
+  },
+  "shared_api_source_unchanged": true,
+  "live_status": "awaiting_live; prior one-client measurements refer to perf.2 only",
+  "build_log_sha256": "ae20389217abb266cce1e361c489bbdc37d90b31504a6808a8fa8c89a92778d1",
+  "package_sha256": "73f408876724f087f2a1b945726d91fb72da39b56d71713cd5c2d799ae31757d"
+}

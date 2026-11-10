@@ -18,24 +18,24 @@ internal static class Control
 
     public static void AddMenu(CCSPlayerController player, ButtonMenu inst)
     {
-        float? old_mod = null;
         int old_selected = 0;
         string old_title = "";
         int old_offset = 0;
         for(int i = 0; i < menus.Count; i++)
             if (menus[i].GetPlayer() == player)
             {
-                var currentPawn = player.PlayerPawn.Value;
-                if (currentPawn is { IsValid: true } && currentPawn.Handle == menus[i].PawnHandle)
-                    old_mod = menus[i].GetMod();
-                old_selected = menus[i].Selected();
-                old_title = menus[i].menu.Title;
-                old_offset = menus[i].Offset();
+                menus[i].RestoreMovement();
+                if (menus[i].IsCurrentPlayer())
+                {
+                    old_selected = menus[i].Selected();
+                    old_title = menus[i].menu.Title;
+                    old_offset = menus[i].Offset();
+                }
                 menus.Remove(menus[i]);
                 i--;
             }
 
-        var menu = new PlayerInfo(player, inst, old_mod, old_selected, old_offset, old_title);            
+        var menu = new PlayerInfo(player, inst, null, old_selected, old_offset, old_title);
         menus.Add(menu);
     }
 
@@ -51,8 +51,7 @@ internal static class Control
 
     public static void Clear()
     {            
-        if (hPlugin != null && !hPlugin.Config.MoveWhileOpenMenu)
-            foreach (var menu in menus) menu.RestoreMovement();
+        foreach (var menu in menus) menu.RestoreMovement();
         menus.RemoveAll(x => true);
     }
 
@@ -71,15 +70,16 @@ internal static class Control
                     continue;
                 }
                 var player = menu.GetPlayer();
-                if(!Misc.IsValidPlayer(player))
+                if(!menu.IsCurrentPlayer() || !Misc.IsValidPlayer(player))
                 {
+                    menu.RestoreMovement();
                     menus.RemoveAt(i);
                     i--;
                     continue;
                 }
                 if (menu.Closed())
                 {
-                    if (!hPlugin.Config.MoveWhileOpenMenu) menu.RestoreMovement();
+                    menu.RestoreMovement();
                     menus.RemoveAt(i--);
                     continue;
                 }
@@ -88,6 +88,8 @@ internal static class Control
                 buttons = player.Buttons;
                 if(!hPlugin.Config.MoveWhileOpenMenu)
                     menu.ApplyMovementLock();
+                else
+                    menu.RestoreMovement();
                 
                 if (!menu.IsEqualButtons(buttons))
                 {
@@ -111,11 +113,16 @@ internal static class Control
                         i--;
                         continue;
                     }
+                    if (!menu.IsCurrentPlayer() || !Misc.IsValidPlayer(player))
+                    {
+                        menu.RestoreMovement();
+                        menus.RemoveAt(i--);
+                        continue;
+                    }
                     if (buttons.HasFlag(hPlugin.Config.ButtonsConfig.ExitButton) || menu.Closed())
                     {                            
                         menu.Close(true);
-                        if (!hPlugin.Config.MoveWhileOpenMenu)
-                            menu.RestoreMovement();
+                        menu.RestoreMovement();
                         menus.RemoveAt(i);
                         i--;
                         continue;

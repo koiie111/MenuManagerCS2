@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
+    <ProductionRoot Condition="'$(ProductionRoot)' == ''">$(MSBuildThisFileDirectory)../../</ProductionRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(ProductionRoot)MenuManagerCore/Control.cs" Link="Control.cs" />
+    <Compile Include="$(ProductionRoot)MenuManagerCore/PlayerInfo.cs" Link="PlayerInfo.cs" />
+    <Compile Include="$(ProductionRoot)MenuManagerCore/ButtonMenu.cs" Link="ButtonMenu.cs" />
+    <Compile Include="$(ProductionRoot)MenuManagerCore/ButtonsConfig.cs" Link="ButtonsConfig.cs" />
+    <Compile Include="$(ProductionRoot)MenuManagerCore/Misc.cs" Link="Misc.cs" />
+    <Compile Include="$(ProductionRoot)MenuManagerCore/Main.cs" Link="Main.cs" />
+    <Compile Include="$(ProductionRoot)MenuManagerCore/MenuInstance.cs" Link="MenuInstance.cs" />
+    <Compile Include="$(ProductionRoot)MenuManagerCore/CMenuApi.cs" Link="CMenuApi.cs" />
+    <Compile Include="$(ProductionRoot)MenuManagerApi/IMenuApi.cs" Link="IMenuApi.cs" />
+  </ItemGroup>
+</Project>
