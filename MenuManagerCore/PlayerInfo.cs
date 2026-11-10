@@ -80,6 +80,13 @@ namespace MenuManager
             var emptyText = Control.GetPlugin().Localizer["menumanager.empty"].Value;
             var footerText = Control.GetPlugin().Localizer["menumanager.footer"].Value;
             var count = menu.MenuOptions.Count;
+            if (cachedCount != count || cachedLines != config.MenuLinesCount)
+            {
+                // Direct option mutations or a smaller page must not leave the
+                // selection outside the list or the visible page.
+                selected = Math.Clamp(selected, 0, Math.Max(0, count - 1));
+                offset = Math.Clamp(offset, Math.Max(0, selected - config.MenuLinesCount + 1), selected);
+            }
             var end = Math.Min(offset + config.MenuLinesCount, count);
             var visible = Math.Max(0, end - offset);
             var dirty = cachedText == null || cachedTitle != menu.Title || cachedSelected != selectedText ||
