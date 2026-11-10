@@ -122,7 +122,7 @@ int sends=player.Html.Count; Control.OnPluginTick();
 Check(Control.menus.Count==0 && player.Html.Count==sends && player.PlayerPawn.Value.VelocityModifier==.9f,"reused controller address cannot inherit menu or lock");
 
 plugin=Reset(); player=Player(); Menu().Open(player); Control.OnPluginTick();
-player.Connected=PlayerConnectedState.PlayerDisconnected; Control.OnPluginTick();
+player.Connected=PlayerConnectedState.Disconnected; Control.OnPluginTick();
 Check(Control.menus.Count==0 && player.PlayerPawn.Value!.VelocityModifier==.75f,"disconnect releases valid original pawn");
 
 plugin=Reset(); player=Player(); Menu(action:(p,_)=>p.IsValid=false).Open(player);

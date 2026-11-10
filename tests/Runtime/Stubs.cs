@@ -37,7 +37,7 @@ namespace CounterStrikeSharp.API.Core
         public void RegisterEventHandler<T>(Func<T,GameEventInfo,HookResult> callback,HookMode mode) =>
             Disconnect=e=>callback((T)(object)e,new());
     }
-    public enum PlayerConnectedState { PlayerConnected, PlayerDisconnected }
+    public enum PlayerConnectedState { Connected, Disconnected }
     public class EntityIdentity { public uint Raw { get; set; } }
     public class Pawn { public bool IsValid=true; public nint Handle; public EntityIdentity EntityHandle=new(); public float VelocityModifier=1; }
     public class PawnHandle { public Pawn? Value; public uint Raw => Value?.EntityHandle.Raw ?? uint.MaxValue; }
@@ -47,7 +47,7 @@ namespace CounterStrikeSharp.API.Core
         public int Slot;
         public nint Handle;
         public EntityIdentity EntityHandle=new();
-        public PlayerConnectedState Connected=PlayerConnectedState.PlayerConnected;
+        public PlayerConnectedState Connected=PlayerConnectedState.Connected;
         public string PlayerName="player";
         public CounterStrikeSharp.API.PlayerButtons Buttons;
         public PawnHandle PlayerPawn=new();

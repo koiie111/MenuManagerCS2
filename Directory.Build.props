@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <CounterStrikeSharpVersion Condition="'$(CounterStrikeSharpVersion)' == ''">1.0.379</CounterStrikeSharpVersion>
+  </PropertyGroup>
+</Project>

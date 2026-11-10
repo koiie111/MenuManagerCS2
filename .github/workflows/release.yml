@@ -1,0 +1,73 @@
+name: Build and release
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: menumanager-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Resolve latest stable CounterStrikeSharp API
+        id: version
+        run: python .github/scripts/release.py resolve
+      - name: Check whether this build is already released
+        id: check
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh api --paginate "repos/$GH_REPO/releases?per_page=100" --jq '.[].tag_name' > /tmp/release-tags
+          if grep -Fxq "$TAG" /tmp/release-tags; then
+            echo 'needed=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'needed=true' >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-dotnet@v4
+        if: steps.check.outputs.needed == 'true'
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - name: Build and verify
+        if: steps.check.outputs.needed == 'true'
+        env:
+          CSS_VERSION: ${{ steps.version.outputs.css }}
+        run: |
+          dotnet build MenuManager.sln -c Release -p:CounterStrikeSharpVersion="$CSS_VERSION"
+          dotnet run --project tests/O3/O3.csproj -c Release
+          dotnet run --project tests/Runtime/Runtime.csproj -c Release
+          python tests/verify_measurements.py
+      - name: Package server files
+        if: steps.check.outputs.needed == 'true'
+        env:
+          CSS_VERSION: ${{ steps.version.outputs.css }}
+        run: python .github/scripts/release.py package "$CSS_VERSION" "$GITHUB_SHA"
+      - name: Publish release
+        if: steps.check.outputs.needed == 'true'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          CSS_VERSION: ${{ steps.version.outputs.css }}
+        run: |
+          printf 'Automated build of commit %s against CounterStrikeSharp.API %s.\n\nExtract the archive into the game directory. Requires a compatible CounterStrikeSharp runtime and the existing PlayerSettings provider. See UPGRADE.md before updating an existing installation.\n' "$GITHUB_SHA" "$CSS_VERSION" > /tmp/release-notes
+          gh release create "$TAG" dist/MenuManagerCS2.zip dist/SHA256SUMS.txt --target "$GITHUB_SHA" --title "MenuManager · CSS $CSS_VERSION · ${GITHUB_SHA:0:7}" --notes-file /tmp/release-notes --latest

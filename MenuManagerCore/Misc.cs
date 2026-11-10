@@ -24,7 +24,7 @@ namespace MenuManager
             var players = new List<CCSPlayerController>();
             foreach (var player in Utilities.GetPlayers())
             {
-                if (player != null && player.IsValid && !player.IsBot && !player.IsHLTV && player.Connected == PlayerConnectedState.PlayerConnected)
+                if (player != null && player.IsValid && !player.IsBot && !player.IsHLTV && player.Connected == PlayerConnectedState.Connected)
                     players.Add(player);
             }
 
@@ -79,7 +79,7 @@ namespace MenuManager
 
         public static bool IsValidPlayer(CCSPlayerController player)
         {
-            if (player.IsValid && player.Connected == PlayerConnectedState.PlayerConnected && !player.IsBot) return true;
+            if (player.IsValid && player.Connected == PlayerConnectedState.Connected && !player.IsBot) return true;
             else return false;
         }
 

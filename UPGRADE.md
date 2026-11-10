@@ -1,5 +1,13 @@
 # MenuManager 1.4.1-perf.3
 
+## Automated builds after the .NET 10 migration
+
+New automated releases target .NET 10 and CSS API 1.0.379 or newer. They require
+a compatible CounterStrikeSharp runtime. The historical .NET 8 build and live
+measurements described below apply only to the recorded artifacts. The ZIP now
+includes a rebuilt shared MenuManagerApi; coordinate its update with consumers.
+Do not install these builds on older .NET 8 CSS runtimes.
+
 The O3 optimization and lifecycle corrections preserve the public MenuManagerApi,
 PlayerSettingsApi, config format, button bindings, HTML send cadence and menu routing.
 Build with `dotnet build MenuManagerCore/MenuManagerCore.csproj -c Release` using

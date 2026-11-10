@@ -3,6 +3,7 @@ import hashlib
 import json
 import math
 import statistics
+import subprocess
 import zipfile
 from collections import defaultdict
 from pathlib import Path
@@ -106,7 +107,10 @@ def main():
     print(f"Verified 12 balanced raw profiles, {sum(len(v) for v in grouped.values())} OnTick calls; all windows and pooled distributions match")
     synthetic = json.loads((ROOT / "synthetic-manifest.json").read_text())
     for name, sha in synthetic["source_sha256_lf"].items():
-        assert digest((ROOT.parents[2] / name).read_bytes(), True) == sha, name
+        # Measurements describe the recorded source revision, not future builds.
+        data = subprocess.check_output(
+            ["git", "show", f"{synthetic['source_commit']}:{name}"], cwd=ROOT.parents[2])
+        assert digest(data, True) == sha, name
     for name, sha in synthetic["data_sha256_lf"].items():
         assert digest((ROOT / name).read_bytes(), True) == sha, name
     old = json.loads((ROOT / "synthetic-baseline.json").read_text())

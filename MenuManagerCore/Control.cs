@@ -44,7 +44,7 @@ internal static class Control
         var players = Utilities.GetPlayers();
         foreach (var player in players)
         {
-            if(player != null && player.IsValid && !player.IsBot && !player.IsHLTV && player.Connected == PlayerConnectedState.PlayerConnected)
+            if(player != null && player.IsValid && !player.IsBot && !player.IsHLTV && player.Connected == PlayerConnectedState.Connected)
                 AddMenu(player, inst);
         }
     }
